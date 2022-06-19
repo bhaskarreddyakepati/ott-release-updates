@@ -1,0 +1,26 @@
+{
+  "name": "ott-release-updates",
+  "version": "1.0.0",
+  "description": "OTT Movie release updates",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bhaskarreddyakepati/ott-release-updates.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bhaskarreddyakepati/ott-release-updates/issues"
+  },
+  "homepage": "https://github.com/bhaskarreddyakepati/ott-release-updates#readme",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "mongoose": "^6.4.0",
+    "nodemon": "^2.0.16"
+  }
+}
