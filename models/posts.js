@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 const { stringify } = require('nodemon/lib/utils');
 
 const postScheme = mongoose.Schema({
-    streamingPartner:{
+    streaming_partner:{
         type:String,
         required: true
     },
-    movieName:{
+    movie_name:{
         type:String,
         required: true
     },
@@ -27,9 +27,18 @@ const postScheme = mongoose.Schema({
     description:{
         type:String,
     },
-    dateReleased:{
-        type:String,
+    date_released:{
+        type:Date,
         required: true
+    },
+    vote_count:{
+        type:String
+    },
+    vote_average:{
+        type:Number
+    },
+    genres:{
+        type:String
     }
 })
 
