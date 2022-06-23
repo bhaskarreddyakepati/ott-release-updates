@@ -31,6 +31,10 @@ const postScheme = mongoose.Schema({
         type:Date,
         required: true
     },
+    display_date:{
+        type:String,
+        required: true
+    },
     vote_count:{
         type:String
     },

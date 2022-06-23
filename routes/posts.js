@@ -37,6 +37,27 @@ router.get("/nextweek", async(req, res)=>{
     }
  })
 
+ //GET ALL PREVIOUS RELEASE POSTS
+router.get("/previousreleases", async(req, res)=>{
+    try{
+         const posts = await Post.find();
+         let today = new Date();
+         let Seventhday = nextweek();
+         let newArray = []
+         for(var i=0; i<posts.length; i++ ) {
+             let postsDate = new Date(posts[i].date_released)
+            if (postsDate < today) {
+                newArray.push(posts[i]);
+              } else {
+                console.log('⛔️ date is not in the range');
+              }
+         }
+         res.json(newArray);
+    }catch(err){
+        res.json({message:err})
+    }
+ })
+
  //GET ALL PREVIOUS WEEK POSTS
 router.get("/previousweek", async(req, res)=>{
     try{
@@ -68,6 +89,7 @@ router.post("/", async(req, res)=>{
         imageUrl: req.body.imageUrl,
         language: req.body.language,
         date_released: req.body.date_released,
+        display_date: req.body.display_date,
         starring: req.body.starring,
         director: req.body.director,
         vote_count: req.body.vote_count,
