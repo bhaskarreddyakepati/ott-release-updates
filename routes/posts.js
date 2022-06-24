@@ -39,7 +39,7 @@ router.get("/comingsoon", async(req, res)=>{
  //GET ALL COMING SOON POSTS
 router.get("/nextweek", async(req, res)=>{
     try{
-         const posts = await Post.find();
+         const posts = await Post.find().sort({ date_released : 1})
          let today = new Date();
          let Seventhday = nextweek();
          let newArray = []
@@ -60,7 +60,7 @@ router.get("/nextweek", async(req, res)=>{
  //GET ALL PREVIOUS RELEASE POSTS
 router.get("/previousreleases", async(req, res)=>{
     try{
-         const posts = await Post.find();
+         const posts = await Post.find().sort({ date_released : -1})
          let today = new Date();
          let Seventhday = nextweek();
          let newArray = []
