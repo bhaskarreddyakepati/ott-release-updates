@@ -8,7 +8,6 @@ const Post = require('../models/posts')
 //GET ALL POSTS
 router.get("/", async(req, res)=>{
    try{
-       console.log("Fetching posts:"+nextweek());
         const posts = await Post.find();
         res.json(posts);
    }catch(err){
@@ -17,7 +16,7 @@ router.get("/", async(req, res)=>{
 })
 
 //GET ALL NEXT WEEK POSTS
-router.get("/nextweek", async(req, res)=>{
+router.get("/comingsoon", async(req, res)=>{
     try{
          const posts = await Post.find();
          let today = new Date();
@@ -26,6 +25,27 @@ router.get("/nextweek", async(req, res)=>{
          for(var i=0; i<posts.length; i++ ) {
              let postsDate = new Date(posts[i].date_released)
             if (postsDate > today && postsDate < Seventhday) {
+                newArray.push(posts[i]);
+              } else {
+                console.log('⛔️ date is not in the range');
+              }
+         }
+         res.json(newArray);
+    }catch(err){
+        res.json({message:err})
+    }
+ })
+
+ //GET ALL COMING SOON POSTS
+router.get("/nextweek", async(req, res)=>{
+    try{
+         const posts = await Post.find();
+         let today = new Date();
+         let Seventhday = nextweek();
+         let newArray = []
+         for(var i=0; i<posts.length; i++ ) {
+             let postsDate = new Date(posts[i].date_released)
+            if (postsDate > today) {
                 newArray.push(posts[i]);
               } else {
                 console.log('⛔️ date is not in the range');
