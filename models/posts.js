@@ -42,7 +42,7 @@ const postScheme = mongoose.Schema({
         type:Number
     },
     genres:{
-        type:String
+        type:Array
     }
 })
 

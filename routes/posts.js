@@ -8,7 +8,7 @@ const Post = require('../models/posts')
 //GET ALL POSTS
 router.get("/", async(req, res)=>{
    try{
-        const posts = await Post.find();
+        const posts = await Post.find().sort({ date_released : -1});
         res.json(posts);
    }catch(err){
        res.json({message:err})
@@ -100,6 +100,47 @@ router.get("/previousweek", async(req, res)=>{
     }
  })
 
+  //GET ALL POSTS BY SEARCH CHARACTERS
+//SPECIFIC POST
+router.get('/search', async(req, res)=>{
+    try{
+        const search = req.query.movieName||"";
+        let genre = req.query.genre||"All";
+        let sort = req.query.sort || "date_released";
+        const genreOptions = ["Action","Drama","Fantasy","Sci-Fi","Adventure",
+        "Thriller","Crime","Comedy","Family","Musical","Romance","Mystery","Humorous", "Suspense", "Biography"]
+        genre === "All"
+                ? (genre = [...genreOptions])
+                : (genre = req.query.genre.split(","))
+        req.query.sort? (sort = req.query.sort.split(",")) : (sort = [sort]);
+        let sortBy = {};
+        if(sort[1]){
+            sortBy[sort[0]] = sort[1];
+        }else{
+            sortBy[sort[0]] = "-1";
+        }
+        const posts = await Post.find({movie_name:{$regex:search, $options:"i"}})
+                        .where("genres")
+                        .in([...genre])
+                        .sort(sortBy)
+        
+        const total =  await Post.countDocuments({
+            genres:{$in:[...genre]},
+            movie_name: {$regex:search, $options:"i"},
+        })
+        const response =  {
+            error: false,
+            total,
+            genres: genreOptions,
+            posts
+        }
+        res.status(200).json(response);
+    }catch(err){
+        console.log(err);
+        res.status(500).json({error:true, message: "Internal Server Error"});
+    }
+})
+
 //CREATE POST
 router.post("/", async(req, res)=>{
     const post = new Post({
@@ -128,7 +169,6 @@ router.post("/", async(req, res)=>{
 //SPECIFIC POST
 router.get('/:postId', async(req, res)=>{
     try{
-        console.log(nextweek);
         const post = await Post.findById(req.params.postId);
         res.json(post);
     }catch(err){
