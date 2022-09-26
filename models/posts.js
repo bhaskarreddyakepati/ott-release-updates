@@ -38,6 +38,9 @@ const postScheme = mongoose.Schema({
     vote_count:{
         type:String
     },
+    video_url:{
+        type:String
+    },
     vote_average:{
         type:Number
     },

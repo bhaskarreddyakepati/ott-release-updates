@@ -253,7 +253,8 @@ router.post("/", async(req, res)=>{
         director: req.body.director,
         vote_count: req.body.vote_count,
         vote_average: req.body.vote_average,
-        genres: req.body.genres
+        genres: req.body.genres,
+        video_url: req.body.video_url
     });
 
     try{
