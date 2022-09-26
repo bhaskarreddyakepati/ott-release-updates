@@ -39,7 +39,24 @@ router.get("/comingsoon", async(req, res)=>{
  //GET ALL COMING SOON POSTS
 router.get("/nextweek", async(req, res)=>{
     try{
-         const posts = await Post.find().sort({ date_released : 1})
+        let genre = req.query.genre||"All";
+        let sort = req.query.sort || "date_released";
+        const genreOptions = ["Action","Drama","Fantasy","Sci-Fi","Adventure",
+        "Thriller","Crime","Comedy","Family","Musical","Romance","Mystery","Humorous", "Suspense", "Biography"]
+        genre === "All"
+                ? (genre = [...genreOptions])
+                : (genre = req.query.genre.split(","))
+        req.query.sort? (sort = req.query.sort.split(",")) : (sort = [sort]);
+        let sortBy = {};
+        if(sort[1]){
+            sortBy[sort[0]] = sort[1];
+        }else{
+            sortBy[sort[0]] = "-1";
+        }
+
+         const posts = await Post.find().where("genres")
+                                        .in([...genre])
+                                        .sort(sortBy)
          let today = new Date();
          let Seventhday = nextweek();
          let newArray = []
@@ -51,16 +68,43 @@ router.get("/nextweek", async(req, res)=>{
                 console.log('⛔️ date is not in the range');
               }
          }
-         res.json(newArray);
+         const total =  await Post.countDocuments({
+            genres:{$in:[...genre]},
+        })
+        const response =  {
+            error: false,
+            total,
+            genres: genreOptions,
+            newArray
+        }
+        res.status(200).json(response);
     }catch(err){
-        res.json({message:err})
+        console.log({message:err})
+        res.status(500).json({error:true, message: "Internal Server Error"});
     }
  })
 
  //GET ALL PREVIOUS RELEASE POSTS
 router.get("/previousreleases", async(req, res)=>{
     try{
-         const posts = await Post.find().sort({ date_released : -1})
+        let genre = req.query.genre||"All";
+        let sort = req.query.sort || "date_released";
+        const genreOptions = ["Action","Drama","Fantasy","Sci-Fi","Adventure",
+        "Thriller","Crime","Comedy","Family","Musical","Romance","Mystery","Humorous", "Suspense", "Biography"]
+        genre === "All"
+                ? (genre = [...genreOptions])
+                : (genre = req.query.genre.split(","))
+        req.query.sort? (sort = req.query.sort.split(",")) : (sort = [sort]);
+        let sortBy = {};
+        if(sort[1]){
+            sortBy[sort[0]] = sort[1];
+        }else{
+            sortBy[sort[0]] = "-1";
+        }
+
+         const posts = await Post.find().where("genres")
+                            .in([...genre])
+                            .sort(sortBy)
          let today = new Date();
          let Seventhday = nextweek();
          let newArray = []
@@ -72,9 +116,19 @@ router.get("/previousreleases", async(req, res)=>{
                 console.log('⛔️ date is not in the range');
               }
          }
-         res.json(newArray);
+         const total =  await Post.countDocuments({
+            genres:{$in:[...genre]},
+        })
+        const response =  {
+            error: false,
+            total,
+            genres: genreOptions,
+            newArray
+        }
+        res.status(200).json(response);
     }catch(err){
-        res.json({message:err})
+        console.log({message:err})
+        res.status(500).json({error:true, message: "Internal Server Error"});
     }
  })
 
