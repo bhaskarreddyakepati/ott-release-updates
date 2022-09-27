@@ -83,7 +83,7 @@ router.get("/previousreleases", async(req, res)=>{
   //GET ALL PREVIOUS RELEASE POSTS
 router.get("/previousreleasess", async(req, res)=>{
     try{
-        let limit = parseInt(req.query.limit) || 5000;
+        let page = parseInt(req.query.page) || 5000;
         let genre = req.query.genre||"All";
         let sort = req.query.sort || "date_released";
         const genreOptions = ["Action","Drama","Fantasy","Sci-Fi","Adventure",
@@ -105,19 +105,21 @@ router.get("/previousreleasess", async(req, res)=>{
          let today = new Date();
          let Seventhday = nextweek();
          let newArray = []
+         let count = (page-1)*10;
+         let j = 0;
          for(var i=0; i<posts.length; i++ ) {
              let postsDate = new Date(posts[i].date_released)
-             if(newArray.length >= limit){
+             if(newArray.length >= 10){
                 break;
-             }if (postsDate < today) {
+             }if (count <= j && postsDate < today) {
                 newArray.push(posts[i]);
-              } else {
+             }else if(postsDate < today){
+                j++;
+             } else {
                 console.log('⛔️ date is not in the range');
               }
          }
-         const total =  await Post.countDocuments({
-            genres:{$in:[...genre]},
-        })
+         const total =  newArray.length;
         const response =  {
             error: false,
             total,
@@ -134,7 +136,7 @@ router.get("/previousreleasess", async(req, res)=>{
  //GET ALL COMING SOON POSTS
 router.get("/nextweeks", async(req, res)=>{
     try{
-        let limit = parseInt(req.query.limit) || 5000;
+        let page = parseInt(req.query.page) || 500;
         let genre = req.query.genre||"All";
         let sort = req.query.sort || "date_released";
         const genreOptions = ["Action","Drama","Fantasy","Sci-Fi","Adventure",
@@ -155,20 +157,22 @@ router.get("/nextweeks", async(req, res)=>{
                                         .sort(sortBy)
          let today = new Date();
          let Seventhday = nextweek();
-         let newArray = []
+         let newArray = [];
+         let count = (page-1)*10;
+         let j = 0;
          for(var i=0; i<posts.length; i++ ) {
              let postsDate = new Date(posts[i].date_released)
-             if(newArray.length >= limit){
+             if(newArray.length >= page*10){
                 break;
-             }if (postsDate > today) {
+            }if (count <= j && postsDate > today) {
                 newArray.push(posts[i]);
-              } else {
+            }else if(postsDate > today){
+                j++;
+            } else {
                 console.log('⛔️ date is not in the range');
-              }
+            }
          }
-         const total =  await Post.countDocuments({
-            genres:{$in:[...genre]},
-        })
+         const total =  newArray.length;
         const response =  {
             error: false,
             total,
