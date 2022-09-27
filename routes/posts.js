@@ -83,6 +83,7 @@ router.get("/previousreleases", async(req, res)=>{
   //GET ALL PREVIOUS RELEASE POSTS
 router.get("/previousreleasess", async(req, res)=>{
     try{
+        let limit = parseInt(req.query.limit) || 5000;
         let genre = req.query.genre||"All";
         let sort = req.query.sort || "date_released";
         const genreOptions = ["Action","Drama","Fantasy","Sci-Fi","Adventure",
@@ -106,7 +107,9 @@ router.get("/previousreleasess", async(req, res)=>{
          let newArray = []
          for(var i=0; i<posts.length; i++ ) {
              let postsDate = new Date(posts[i].date_released)
-            if (postsDate < today) {
+             if(newArray.length >= limit){
+                break;
+             }if (postsDate < today) {
                 newArray.push(posts[i]);
               } else {
                 console.log('⛔️ date is not in the range');
@@ -131,6 +134,7 @@ router.get("/previousreleasess", async(req, res)=>{
  //GET ALL COMING SOON POSTS
 router.get("/nextweeks", async(req, res)=>{
     try{
+        let limit = parseInt(req.query.limit) || 5000;
         let genre = req.query.genre||"All";
         let sort = req.query.sort || "date_released";
         const genreOptions = ["Action","Drama","Fantasy","Sci-Fi","Adventure",
@@ -154,7 +158,9 @@ router.get("/nextweeks", async(req, res)=>{
          let newArray = []
          for(var i=0; i<posts.length; i++ ) {
              let postsDate = new Date(posts[i].date_released)
-            if (postsDate > today) {
+             if(newArray.length >= limit){
+                break;
+             }if (postsDate > today) {
                 newArray.push(posts[i]);
               } else {
                 console.log('⛔️ date is not in the range');
