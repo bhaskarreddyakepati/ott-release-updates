@@ -160,7 +160,7 @@ router.get("/nextweeks", async(req, res)=>{
         if(sort[1]){
             sortBy[sort[0]] = sort[1];
         }else{
-            sortBy[sort[0]] = "-1";
+            sortBy[sort[0]] = "1";
         }
 
          const posts = await Post.find().where("genres")
